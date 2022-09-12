@@ -53,7 +53,7 @@ export default function Registration() {
                     onChange={e => setForm({...form, password: e.target.value})}
                 />
                 <input
-                    type='passwordconf'
+                    type='password'
                     name='passwordconf'
                     value={form.passwordconf}
                     placeholder='Confirme a senha'

@@ -1,23 +1,50 @@
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import UserContext from "../contexts/UserContext";
+import { postTransactions } from "../services/mywallet";
 
 export default function Outcome() {
+    const [form, setForm] = useState({ value: '', description: '', type: 'outcome' });
+    const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+
+    function outcome(event) {
+        event.preventDefault();
+
+        postTransactions({
+            value: form.value,
+            description: form.description,
+            type: form.type
+        }, user.token)
+            .then(resposta => {
+                navigate('/home');
+            })
+            .catch(resposta => {
+                alert('erro ao cadastrar saída. Tente novamente!')
+            })
+    }
     return (
         <Container>
         <Header>Nova saída</Header>
-        <Form>
+        <Form onSubmit={outcome}>
             <input
                 type='value'
                 name='value'
+                value={form.value}
                 placeholder='Valor'
                 required
+                onChange={e => setForm({...form, value: e.target.value})}
             />
             <input
                 type='description'
                 name='description'
+                value={form.description}
                 placeholder='Descrição'
                 required
+                onChange={e => setForm({...form, description: e.target.value})}
             />
-            <button>Salvar saída</button>
+            <button type="submit">Salvar saída</button>
         </Form>
     </Container>
     );
