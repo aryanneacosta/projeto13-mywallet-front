@@ -1,36 +1,66 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { postSignUp } from "../services/mywallet";
 
 export default function Registration() {
+    const [form, setForm] = useState({ name: '', email: '', password: '', passwordconf: ''});
+    const navigate = useNavigate();
+
+    function registration(event) {
+        event.preventDefault();
+
+        postSignUp({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            passwordconf: form.passwordconf
+        })
+            .then(resposta => {
+                navigate('/');
+            })
+            .catch(resposta => {
+                alert('erro ao cadastrar. Tente novamente!');
+            })
+    }
+
     return (
         <Container>
             <Title>MyWallet</Title>
-            <Form>
+            <Form onSubmit={registration}>
                 <input
                     type='name'
                     name='name'
+                    value={form.name}
                     placeholder='Nome'
                     required
+                    onChange={e => setForm({...form, name: e.target.value})}
                 />
                 <input
                     type='email'
                     name='email'
+                    value={form.email}
                     placeholder='E-mail'
                     required
+                    onChange={e => setForm({...form, email: e.target.value})}
                 />
                 <input
                     type='password'
                     name='password'
+                    value={form.password}
                     placeholder='Senha'
                     required
+                    onChange={e => setForm({...form, password: e.target.value})}
                 />
                 <input
-                    type='password-confirm'
-                    name='password-confirm'
+                    type='passwordconf'
+                    name='passwordconf'
+                    value={form.passwordconf}
                     placeholder='Confirme a senha'
                     required
+                    onChange={e => setForm({...form, passwordconf: e.target.value})}
                 />
-                <button>Cadastrar</button>
+                <button type="submit">Cadastrar</button>
             </Form>
             <Link to={'/'}>
                 <Register>

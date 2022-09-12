@@ -1,24 +1,51 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { postSignIn } from "../services/mywallet";
+import UserContext from "../contexts/UserContext";
 
 export default function Login() {
+    const [form, setForm] = useState({ email: '', password: ''});
+    const navigate = useNavigate();
+    const { setUser } = useContext(UserContext);
+
+    function login(event) {
+        event.preventDefault();
+
+        postSignIn({
+            email: form.email,
+            password: form.password
+        })
+            .then(resposta => {
+                setUser(resposta.data);
+                navigate('/home');
+            })
+            .catch(resposta => {
+                alert('e-mail ou senha incorretos. Tente novamente ou faça seu cadastro!')
+            })
+    }
+
     return (
         <Container>
             <Title>MyWallet</Title>
-            <Form>
+            <Form onSubmit={login}>
                 <input
                     type='email'
                     name='email'
+                    value={form.email}
                     placeholder='E-mail'
                     required
+                    onChange={e => setForm({...form, email: e.target.value})}
                 />
                 <input
                     type='password'
                     name='password'
+                    value={form.password}
                     placeholder='Senha'
                     required
+                    onChange={e => setForm({...form, password: e.target.value})}
                 />
-                <button>Entrar</button>
+                <button type="submit">Entrar</button>
             </Form>
             <Link to={'/cadastro'}>
                 <Register>
